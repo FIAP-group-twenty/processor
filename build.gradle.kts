@@ -35,6 +35,7 @@ dependencies {
 	implementation("aws.sdk.kotlin:s3:$kotlinSdkVersion")
 	implementation("aws.sdk.kotlin:s3control:$kotlinSdkVersion")
 	implementation("aws.sdk.kotlin:sqs:1.2.28")
+	implementation("com.arthenica:ffmpeg-kit-full:5.1")
 
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
