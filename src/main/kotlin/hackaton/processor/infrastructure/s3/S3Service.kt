@@ -1,29 +1,50 @@
 package hackaton.processor.infrastructure.s3
 
 import aws.sdk.kotlin.services.s3.S3Client
-import aws.sdk.kotlin.services.s3.getObject
-import aws.sdk.kotlin.services.s3.putObject
+import aws.sdk.kotlin.services.s3.model.GetObjectRequest
+import aws.sdk.kotlin.services.s3.model.PutObjectRequest
+import aws.smithy.kotlin.runtime.content.ByteStream
+import aws.smithy.kotlin.runtime.content.asByteStream
+import aws.smithy.kotlin.runtime.content.toByteArray
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class S3Service(private val s3Client: S3Client) {
 
     suspend fun downloadFile(bucketName: String, key: String, outputPath: String) {
-        val response = s3Client.getObject {
+        val request = GetObjectRequest {
             bucket = bucketName
             this.key = key
         }
 
-        File(outputPath).outputStream().use { fileOut ->
-            response.body?.use { it.copyTo(fileOut) }
+        s3Client.getObject(request) { getObjectResponse ->
+            val filePath = Paths.get(outputPath)
+
+            getObjectResponse.body?.let { byteStream ->
+                val bytes = byteStream.toByteArray()
+                Files.write(filePath, bytes)
+            } ?: throw IllegalStateException("O corpo do objeto está vazio.")
         }
     }
 
     suspend fun uploadFile(bucketName: String, key: String, filePath: String) {
         val file = File(filePath)
-        s3Client.putObject {
-            bucket = bucketName
-            this.key = key
-            body = file.readBytes()
+        if (!file.exists()) {
+            throw IllegalArgumentException("Arquivo não encontrado no caminho: $filePath")
+        }
+
+        try {
+            val inputStream: ByteStream = file.asByteStream()
+            val request = PutObjectRequest {
+                bucket = bucketName
+                this.key = key
+                body = inputStream
+            }
+
+            s3Client.putObject(request)
+        } catch (e: Exception) {
+            throw RuntimeException("Erro ao fazer upload do arquivo: ${e.message}", e)
         }
     }
 }
