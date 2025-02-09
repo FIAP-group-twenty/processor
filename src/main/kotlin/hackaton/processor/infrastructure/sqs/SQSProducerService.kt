@@ -1,5 +1,8 @@
 package hackaton.processor.infrastructure.sqs
 
+import org.springframework.stereotype.Service
+
+@Service
 class SQSProducerService(private val sqsService: SqsService) {
 
     suspend fun produceToQueue(queueUrl: String, message: String) {

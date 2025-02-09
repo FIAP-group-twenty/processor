@@ -9,17 +9,20 @@ import java.util.zip.ZipOutputStream
 class VideoProcessor {
 
     fun extractFramesAndZip(videoPath: String, outputDir: String, intervalSeconds: Int = 20): String {
-        val ffmpegPath = "ffmpeg"
         val outputFolder = File(outputDir)
         outputFolder.mkdirs()
 
-        val interval = "00:00:${intervalSeconds.toString().padStart(2, '0')}"
         val outputPattern = "$outputDir/frame_%03d.jpg"
-        val process = ProcessBuilder(
-            ffmpegPath, "-i", videoPath, "-vf", "fps=1/$interval", outputPattern
-        ).start()
+        val command = arrayOf("ffmpeg", "-i", videoPath, "-vf", "fps=1/$intervalSeconds", outputPattern)
 
-        process.waitFor()
+        val process = ProcessBuilder(*command)
+            .redirectErrorStream(true)
+            .start()
+
+        val exitCode = process.waitFor()
+        if (exitCode != 0) {
+            throw RuntimeException("Erro ao processar vídeo. Código de saída: $exitCode")
+        }
 
         val zipFilePath = "$outputDir/frames.zip"
         ZipOutputStream(FileOutputStream(zipFilePath)).use { zipOut ->

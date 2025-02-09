@@ -6,11 +6,12 @@ import aws.sdk.kotlin.services.s3.model.PutObjectRequest
 import aws.smithy.kotlin.runtime.content.ByteStream
 import aws.smithy.kotlin.runtime.content.asByteStream
 import aws.smithy.kotlin.runtime.content.toByteArray
-import hackaton.processor.api.config.AwsConfig
+import org.springframework.stereotype.Service
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
+@Service
 class S3Service(private val s3Client: S3Client) {
 
     suspend fun downloadFile(bucketName: String, key: String, outputPath: String) {
@@ -56,13 +57,12 @@ class S3Service(private val s3Client: S3Client) {
         processedKey: String
     ) {
         val tempVideoPath = "$outputDir/video.mp4"
-        val s3Service = S3Service(AwsConfig.createS3Client())
 
-        s3Service.downloadFile(bucketName, videoKey, tempVideoPath)
+        downloadFile(bucketName, videoKey, tempVideoPath)
 
         val processor = VideoProcessor()
         val zipPath = processor.extractFramesAndZip(tempVideoPath, outputDir)
 
-        s3Service.uploadFile(bucketName, processedKey, zipPath)
+        uploadFile(bucketName, processedKey, zipPath)
     }
 }
