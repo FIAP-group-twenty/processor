@@ -1,14 +1,13 @@
 package hackaton.processor.core.usecases
 
-import hackaton.processor.infrastructure.s3.S3Service
+import hackaton.processor.infrastructure.s3.VideoProcessor
+import org.springframework.stereotype.Service
 
-class ProcessVideoUseCase(private val s3Service: S3Service) {
-    suspend fun execute() {
-        val bucketName = "meu-bucket"
-        val videoKey = "videos/input/video.mp4"
-        val outputDir = "/tmp/processing"
-        val processedKey = "videos/output/frames.zip"
+@Service
+class ProcessVideoUseCase {
 
-        s3Service.processVideoAndUpload(bucketName, videoKey, outputDir, processedKey)
+    suspend fun execute(videoPath: String): String {
+        val videoProcessor = VideoProcessor()
+        return videoProcessor.extractFramesAndZip(videoPath, "/tmp")
     }
 }
