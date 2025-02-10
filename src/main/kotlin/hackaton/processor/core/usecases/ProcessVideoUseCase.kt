@@ -26,8 +26,13 @@ class ProcessVideoUseCase(
     suspend fun processVideo(messageIn: MessageIn) {
         try {
             val videoDir = "/tmp/${messageIn.title}"
+            val videoFolder = File(videoDir)
             val zipFilePath = "$videoDir/${messageIn.title}-frames.zip"
             val zipFileName = "${messageIn.title}-frames.zip"
+
+            if (!videoFolder.exists()) {
+                videoFolder.mkdirs()
+            }
 
             processVideoGateway.downloadVideo(bucketName, messageIn.title, videoDir)
             extractFramesAndZip(videoDir, zipFilePath)

@@ -1,0 +1,2 @@
+SONAR_HOST_URL=https://sonarcloud.io
+SONAR_TOKEN=6cac1a682e34466f8237aa2b0f3154af5073568d

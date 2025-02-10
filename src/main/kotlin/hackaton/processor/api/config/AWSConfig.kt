@@ -1,8 +1,8 @@
 package hackaton.processor.api.config
 
+import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.sdk.kotlin.services.s3.S3Client
 import aws.sdk.kotlin.services.sqs.SqsClient
-import aws.sdk.kotlin.runtime.auth.credentials.StaticCredentialsProvider
 import aws.smithy.kotlin.runtime.auth.awscredentials.Credentials
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

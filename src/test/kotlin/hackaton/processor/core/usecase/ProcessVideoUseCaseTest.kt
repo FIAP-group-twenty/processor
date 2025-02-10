@@ -28,8 +28,16 @@ class ProcessVideoUseCaseTest {
     private val useCase = ProcessVideoUseCase(processVideoGateway, s3Client, "bucketName", "queueOut")
 
     @Test
-    fun `should process video and send message`() = runBlocking {
+    fun `should process video and send message`(): Unit = runBlocking {
         val messageIn = MessageIn("email@example.com", STARTED, "title", "url")
+
+        val tempDir = File("build/tmp/title")
+        if (!tempDir.exists()) {
+            tempDir.mkdirs()
+        }
+
+        val outputFile = File(tempDir, "title")
+        outputFile.writeText("dummy video content")
 
         coEvery { processVideoGateway.downloadVideo(any(), any(), any()) } just Runs
         coEvery { processVideoGateway.uploadVideo(any(), any(), any()) } just Runs
@@ -40,19 +48,17 @@ class ProcessVideoUseCaseTest {
         coVerify { processVideoGateway.downloadVideo(any(), any(), any()) }
         coVerify { processVideoGateway.uploadVideo(any(), any(), any()) }
         coVerify { processVideoGateway.sendMessage(any(), any()) }
+
+        outputFile.delete()
+        tempDir.delete()
     }
+
 
     @Test
     fun `should handle exception when video download fails`() = runBlocking {
         val messageIn = MessageIn("email@example.com", STARTED, "title", "url")
 
-        coEvery {
-            processVideoGateway.downloadVideo(
-                any(),
-                any(),
-                any()
-            )
-        } throws FileNotFoundException("File not found")
+        coEvery { processVideoGateway.downloadVideo(any(), any(), any()) } throws FileNotFoundException("File not found")
 
         try {
             useCase.processVideo(messageIn)
