@@ -30,6 +30,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-sonar-cache
 
+      - name: Set execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Install dependencies
         run: ./gradlew build --no-daemon
 
@@ -40,7 +43,7 @@ jobs:
 
       - name: Validate test coverage
         run: |
-          coverage=$(curl -s "https://sonarcloud.io/api/measures/component?componentKey=group-twenty_upload-api&metricKeys=coverage" | jq -r '.component.measures[0].value')
+          coverage=$(curl -s "https://sonarcloud.io/api/measures/component?componentKey=group-twenty_processor&metricKeys=coverage" | jq -r '.component.measures[0].value')
           echo "Test coverage: $coverage"
           if (( $(echo "$coverage >= 50" | bc -l) )); then
           echo "Test coverage is sufficient: $coverage%"
