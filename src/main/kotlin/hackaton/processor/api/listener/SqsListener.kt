@@ -41,7 +41,7 @@ class SqsListener(
         }
     }
 
-    private suspend fun processMessage(message: String) {
+    suspend fun processMessage(message: String) {
         try {
             processVideoUseCase.processVideo(toMessageIn(message))
         } catch (e: Exception) {

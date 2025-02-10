@@ -101,7 +101,7 @@ class ProcessVideoUseCase(
         }
     }
 
-    private suspend fun generatePresignedUrl(bucketName: String, fileName: String): String {
+    suspend fun generatePresignedUrl(bucketName: String, fileName: String): String {
         val getObjectRequest = GetObjectRequest {
             bucket = bucketName
             key = fileName
