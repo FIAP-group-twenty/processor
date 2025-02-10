@@ -61,10 +61,10 @@ sonarqube {
 		property ("sonar.projectKey", "group-twenty_processor")
 		property ("sonar.organization", "group-twenty")
 		property ("sonar.host.url", project.findProperty("SONAR_HOST_URL") ?: "")
-		property("sonar.login", project.findProperty("SONAR_TOKEN") ?: "")
-		property("sonar.kotlin.language.level", "1.9")
-		property("sonar.sources", "src/main/kotlin")
-		property("sonar.tests", "src/test/kotlin")
+		property ("sonar.login", project.findProperty("SONAR_TOKEN") ?: "")
+		property ("sonar.kotlin.language.level", "1.9")
+		property ("sonar.sources", "src/main/kotlin")
+		property ("sonar.tests", "src/test/kotlin")
 	}
 }
 
