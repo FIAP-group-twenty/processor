@@ -21,7 +21,7 @@ class S3Service(private val s3Client: S3Client) {
         }
 
         s3Client.getObject(request) { getObjectResponse ->
-            val filePath = Paths.get(outputPath)
+            val filePath = Paths.get(outputPath, key)
 
             getObjectResponse.body?.let { byteStream ->
                 val bytes = byteStream.toByteArray()
@@ -48,21 +48,5 @@ class S3Service(private val s3Client: S3Client) {
         } catch (e: Exception) {
             throw RuntimeException("Erro ao fazer upload do arquivo: ${e.message}", e)
         }
-    }
-
-    suspend fun processVideoAndUpload(
-        bucketName: String,
-        videoKey: String,
-        outputDir: String,
-        processedKey: String
-    ) {
-        val tempVideoPath = "$outputDir/video.mp4"
-
-        downloadFile(bucketName, videoKey, tempVideoPath)
-
-        val processor = VideoProcessor()
-        val zipPath = processor.extractFramesAndZip(tempVideoPath, outputDir)
-
-        uploadFile(bucketName, processedKey, zipPath)
     }
 }
