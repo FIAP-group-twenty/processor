@@ -33,6 +33,9 @@ jobs:
       - name: Set execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Force Gradle wrapper update
+        run: gradle wrapper
+
       - name: Install dependencies
         run: ./gradlew build --no-daemon
 
