@@ -4,6 +4,7 @@ plugins {
 	id("org.springframework.boot") version "3.4.2"
 	id("io.spring.dependency-management") version "1.1.7"
 	id("org.sonarqube") version "6.0.1.5171"
+	id("jacoco")
 }
 
 group = "hackaton"
@@ -25,6 +26,11 @@ buildscript {
 
 repositories {
 	mavenCentral()
+	gradlePluginPortal()
+}
+
+jacoco {
+	toolVersion = "0.8.8"
 }
 
 val kotlinSdkVersion = "1.0.41"
@@ -70,4 +76,27 @@ sonarqube {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.test {
+	useJUnitPlatform()
+
+	finalizedBy(tasks.jacocoTestReport)
+	testLogging {
+		events("passed", "failed", "skipped")
+	}
+	reports {
+		junitXml.required.set(true)
+		junitXml.outputLocation.set(file("${project.projectDir}/test-results/test"))
+		html.required.set(true)
+		html.outputLocation.set(file("${project.projectDir}/test-results/test"))
+	}
+}
+
+tasks.jacocoTestReport {
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+		html.outputLocation.set(file("${project.projectDir}/reports/jacoco"))
+	}
 }
