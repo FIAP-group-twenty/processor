@@ -1,53 +1,33 @@
 package hackaton.processor.api
 
+import aws.sdk.kotlin.services.s3.S3Client
+import aws.sdk.kotlin.services.sqs.SqsClient
 import hackaton.processor.api.listener.SqsListener
 import hackaton.processor.core.usecases.ProcessVideoUseCase
+import hackaton.processor.infrastructure.gateway.ProcessVideoGateway
 import hackaton.processor.infrastructure.sqs.SqsService
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 
-//@SpringBootTest
 //class SqsListenerTest {
 //
-//    @MockBean
-//    private lateinit var sqsService: SqsService
-//
-//    @MockBean
-//    private lateinit var processVideoUseCase: ProcessVideoUseCase
-//
-//    private lateinit var sqsListener: SqsListener
-//
-//    @BeforeEach
-//    fun setup() {
-//        sqsListener = SqsListener(sqsService, processVideoUseCase)
-//    }
+//    private val sqsClient: SqsClient = mockk(relaxed = true)
+//    private val sqsService = SqsService(sqsClient)
+//    private val processVideoGateway = mockk<ProcessVideoGateway>(relaxed = true)
+//    private val s3Client = mockk<S3Client>(relaxed = true)
+//    private val useCase = mockk<ProcessVideoUseCase>(relaxed = true)
 //
 //    @Test
-//    fun `should process messages from SQS`() = runBlocking {
-//        val message = """{"email":"test@email.com","status":"IN_PROCESSING","title":"Test Video","urlVideo":"http://example.com"}"""
-//        coEvery { sqsService.receiveMessages(any()) } returns listOf(message)
-//        coEvery { processVideoUseCase.processVideo(any()) } just Runs
+//    fun `test startListening should call processVideoUseCase`() = runBlocking {
+//        val message = "test message"
+//        val sqsListener = SqsListener(sqsService, useCase)
 //
 //        sqsListener.startListening(message)
 //
-//        coVerify { processVideoUseCase.processVideo(any()) }
-//    }
-//
-//    @Test
-//    fun `should handle exception when processing message`() = runBlocking {
-//        val message = """{"email":"test@email.com","status":"IN_PROCESSING","title":"Test Video","urlVideo":"http://example.com"}"""
-//        coEvery { processVideoUseCase.processVideo(any()) } throws RuntimeException("Processing error")
-//
-//        sqsListener.startListening(message)
-//
-//        coVerify { processVideoUseCase.processVideo(any()) }
+//        verify(useCase, times(1)).processVideo(any())
 //    }
 //}

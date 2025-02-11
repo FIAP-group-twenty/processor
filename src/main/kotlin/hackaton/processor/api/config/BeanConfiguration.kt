@@ -15,7 +15,6 @@ class BeanConfiguration(
     private val s3Client: S3Client,
     private val sqsService: SqsService,
     @Value(value = "\${aws.bucketName}") private var bucketName: String,
-    @Value("\${aws.sqs.queue-upload}") private var queueIn: String,
     @Value("\${aws.sqs.queue-update}") private var queueOut: String
 ) {
 
