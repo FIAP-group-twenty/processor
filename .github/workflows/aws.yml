@@ -114,4 +114,4 @@ jobs:
 
       - name: Atualizar deployment no EKS
         run: |
-          kubectl set image deployment/upload-api upload-api=${{ secrets.DOCKER_IMAGE }}:latest
+          kubectl set image deployment/processor processor=${{ secrets.DOCKER_IMAGE }}:latest
