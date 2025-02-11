@@ -64,6 +64,12 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
       - name: Remover pacotes conflitantes
         run: |
           sudo apt-get remove -y docker docker-engine docker.io containerd runc
@@ -108,4 +114,4 @@ jobs:
 
       - name: Atualizar deployment no EKS
         run: |
-          kubectl set image deployment/upload-api upload-api=${{ secrets.DOCKER_IMAGE }}:latest
+          kubectl set image deployment/processor processor=${{ secrets.DOCKER_IMAGE }}:latest
