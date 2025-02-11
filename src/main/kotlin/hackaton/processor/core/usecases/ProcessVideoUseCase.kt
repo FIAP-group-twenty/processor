@@ -38,7 +38,7 @@ class ProcessVideoUseCase(
             extractFramesAndZip(videoDir, zipFilePath)
             processVideoGateway.uploadVideo(bucketName, zipFileName, zipFilePath)
 
-            val presignedUrl = generatePresignedUrl(bucketName, zipFileName)
+            val presignedUrl = "https://hackathon-bucket-unique-name.s3.amazonaws.com/${messageIn.title}"
             val messageOut = toMessageOutString(messageIn, FINISHED, presignedUrl)
 
             processVideoGateway.sendMessage(queueOut, messageOut)
@@ -104,15 +104,6 @@ class ProcessVideoUseCase(
             framesDir.delete()
             println("Arquivos temporários removidos.")
         }
-    }
-
-    suspend fun generatePresignedUrl(bucketName: String, fileName: String): String {
-        val getObjectRequest = GetObjectRequest {
-            bucket = bucketName
-            key = fileName
-        }
-
-        return s3Client.presignGetObject(getObjectRequest,  365.days).toString()
     }
 }
 
